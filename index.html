@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NASA Space Dashboard</title>
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!--
+    NASA Space Dashboard - Project 5: APIs and Animations
+
+    This dashboard fetches live data from three NASA Open APIs and displays them
+    in a responsive grid layout. The page uses:
+    
+    1) CSS Grid for the main panels layout with responsive breakpoints
+    2) Flexbox for internal panel content alignment
+    3) Popmotion stagger animation for panel entrance effects
+    4) Dark space-themed color palette via CSS custom properties
+    5) Accessibility features: semantic HTML, focus-visible, alt text, table captions
+  -->
+
+  <div class="wrapper">
+    <!--
+      HEADER / HERO SECTION
+      - Contains the main title and tagline for the NASA Space Dashboard
+      - Uses semantic <header> element for accessibility
+      - <h1> provides the primary page heading for screen readers
+    -->
+    <header class="site-header">
+      <section class="hero">
+        <div class="hero-content">
+          <h1 class="hero-title">NASA Space Dashboard</h1>
+          <p class="hero-tagline">Explore the cosmos with live data from NASA's Open APIs — astronomy images, Mars rover photos, and near-Earth objects.</p>
+        </div>
+      </section>
+    </header>
+
+    <!--
+      MAIN CONTENT AREA
+      - Contains the three data panels in a responsive CSS Grid layout
+      - Uses semantic <main> element to identify primary content
+      - Each panel is a <section> with unique ID for JavaScript targeting
+    -->
+    <main>
+      <div class="panels-grid">
+        <!--
+          ASTRONOMY PICTURE OF THE DAY PANEL
+          - Fetches today's APOD from NASA's planetary API
+          - Displays either an image or video link with title and explanation
+          - panel__loader: CSS spinner shown during fetch
+          - panel__error: Error message container (hidden by default)
+          - panel__content: Target element where APOD data is rendered
+        -->
+        <section id="panel-apod" class="panel">
+          <h2>Astronomy Picture of the Day</h2>
+          <div class="panel__loader"></div>
+          <div class="panel__error" hidden></div>
+          <div class="panel__content"></div>
+        </section>
+
+        <!--
+          MARS ROVER PHOTOS PANEL
+          - Fetches latest photos from NASA's Mars Rover Photos API (Curiosity rover)
+          - Displays 6-12 photos in a responsive image grid
+          - Shows Earth date and Martian sol as caption
+          - Each image includes alt text with rover name and camera name
+        -->
+        <section id="panel-mars" class="panel">
+          <h2>Mars Rover Photos</h2>
+          <div class="panel__loader"></div>
+          <div class="panel__error" hidden></div>
+          <div class="panel__content"></div>
+        </section>
+
+        <!--
+          NEAR EARTH OBJECTS PANEL
+          - Fetches today's near-Earth asteroid data from NASA's NeoWs API
+          - Displays data as an accessible HTML table with caption and scope attributes
+          - Highlights potentially hazardous asteroids with distinct styling
+          - Limited to first 10 objects for readability
+        -->
+        <section id="panel-neo" class="panel">
+          <h2>Near Earth Objects</h2>
+          <div class="panel__loader"></div>
+          <div class="panel__error" hidden></div>
+          <div class="panel__content"></div>
+        </section>
+      </div>
+    </main>
+
+    <!--
+      FOOTER
+      - Credits the NASA Open API as the data source
+      - Uses semantic <footer> element for accessibility
+      - Provides attribution required by NASA API terms of use
+    -->
+    <footer class="site-footer">
+      <p>Data provided by <a href="https://api.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA Open API</a>. 
+      This dashboard uses NASA's Astronomy Picture of the Day, Mars Rover Photos, and Near Earth Object Web Service APIs.</p>
+    </footer>
+  </div>
+
+  <!--
+    POPMOTION ANIMATION LIBRARY
+    - Loaded via CDN for stagger entrance animations
+    - Includes stagger, framesync, and composite APIs
+    - Script is placed before closing </body> for optimal loading performance
+    - The library exposes APIs on window.popmotion global object
+  -->
+  <script src="https://unpkg.com/popmotion@11.0.3/dist/popmotion.global.min.js"></script>
+  
+  <!--
+    MAIN APPLICATION SCRIPT
+    - Contains all NASA API fetch logic, DOM rendering, and animation code
+    - Runs after DOM is loaded and Popmotion library is available
+  -->
+  <script src="script.js"></script>
+</body>
+</html>

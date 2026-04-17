@@ -1,0 +1,903 @@
+/*
+  ============================================================================
+  NASA Space Dashboard - Dark Space Theme
+  ============================================================================
+  
+  This stylesheet implements a dark space-themed design for the NASA dashboard.
+  Key features used:
+  
+  - CSS Custom Properties (CSS Variables) for consistent theming
+  - CSS Grid for responsive panel layout with breakpoints
+  - Flexbox for internal panel content alignment
+  - CSS animations for loading spinners
+  - :focus-visible for keyboard accessibility
+  - Media queries for responsive breakpoints at 600px and 1024px
+  
+  MDN References:
+  - CSS Custom Properties: https://developer.mozilla.org/en-US/docs/Web/CSS/--*
+  - CSS Grid: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout
+  - Flexbox: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout
+  - :focus-visible: https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible
+*/
+
+/*
+  CSS CUSTOM PROPERTIES (CSS Variables) - Dark Space Theme
+  ============================================================================
+  
+  CSS Custom Properties allow us to define reusable values that can be updated
+  in one place and automatically cascade throughout the stylesheet. This is
+  especially useful for theming because we can define our color palette once
+  and reference it everywhere.
+  
+  Why CSS Custom Properties over Sass variables:
+  - They cascade and inherit like normal CSS properties
+  - They can be updated dynamically with JavaScript
+  - They work in all modern browsers without a build step
+  - They respect the cascade, so we can override them in media queries
+  
+  Dark Space Theme Rationale:
+  - Deep space backgrounds (#0a0a0f, #1a1a2e) evoke the cosmos
+  - Bright accent colors (#64ffda, #ff6b6b) provide contrast and visual interest
+  - Subtle borders and shadows create depth without being distracting
+  - High contrast ensures accessibility for users with visual impairments
+*/
+:root {
+  /* Background Colors - Deep space theme with subtle gradients */
+  --bg-dark: #0a0a0f;           /* Primary background - deep space black */
+  --bg-panel: #1a1a2e;         /* Panel background - slightly lighter for contrast */
+  --bg-hero: #16213e;          /* Hero section background - navy blue */
+  
+  /* Text Colors - High contrast for accessibility */
+  --color-text: #e8eaed;       /* Primary text - light gray for readability */
+  --color-text-dim: #9aa0a6;   /* Secondary text - dimmed for less important content */
+  --color-heading: #ffffff;    /* Headings - pure white for maximum contrast */
+  
+  /* Accent Colors - Inspired by space imagery */
+  --color-accent: #64ffda;     /* Primary accent - cyan like nebula gas */
+  --color-accent-hover: #4fd3b8; /* Hover state - slightly darker cyan */
+  --color-hazardous: #ff6b6b;  /* Warning color - red for hazardous asteroids */
+  --color-success: #4caf50;    /* Success state - green for loaded content */
+  
+  /* Border and Shadow Colors - Subtle depth */
+  --border-panel: rgba(100, 255, 218, 0.2);  /* Panel borders - translucent accent */
+  --border-focus: #64ffda;     /* Focus outline - solid accent for visibility */
+  --shadow-panel: 0 4px 12px rgba(0, 0, 0, 0.3); /* Panel shadows - soft depth */
+  --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.4);  /* Hover shadows - more pronounced */
+  
+  /* Spacing and Sizing - Consistent rhythm */
+  --spacing-xs: 0.25rem;       /* 4px - tight spacing */
+  --spacing-sm: 0.5rem;        /* 8px - small spacing */
+  --spacing-md: 1rem;          /* 16px - medium spacing */
+  --spacing-lg: 1.5rem;        /* 24px - large spacing */
+  --spacing-xl: 2rem;          /* 32px - extra large spacing */
+  
+  /* Border Radius - Consistent rounded corners */
+  --radius-sm: 4px;            /* Small radius for buttons */
+  --radius-md: 8px;            /* Medium radius for cards */
+  --radius-lg: 12px;           /* Large radius for panels */
+}
+
+/*
+  BOX-SIZING RESET
+  ============================================================================
+  
+  The box-sizing: border-box model makes CSS layout much more predictable.
+  Instead of width/height being content-only (the default), border-box includes
+  padding and borders in the element's total width/height.
+  
+  Why this matters for Grid layouts:
+  - Grid track sizing becomes more predictable
+  - Panel padding doesn't unexpectedly increase track sizes
+  - Responsive design calculations are more reliable
+  
+  The inherit pattern ensures all elements and pseudo-elements use the same
+  box model consistently throughout the page.
+*/
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+/*
+  BASE STYLES AND TYPOGRAPHY
+  ============================================================================
+  
+  These styles establish the foundation for the entire page:
+  - Dark space background using CSS custom properties
+  - Typography hierarchy with consistent spacing
+  - Image responsiveness for NASA photos
+  - Link styling that fits the space theme
+*/
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--color-text);
+  background: var(--bg-dark);
+  line-height: 1.6;
+  
+  /* 
+    Subtle background gradient to add visual interest
+    The radial gradient creates a subtle "glow" effect in the top-left corner
+    that mimics distant starlight or nebula effects
+  */
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(100, 255, 218, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 107, 107, 0.05) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+/*
+  IMAGE RESPONSIVENESS
+  ============================================================================
+  
+  All images are made responsive by default:
+  - display: block removes the inline spacing that can cause layout issues
+  - max-width: 100% ensures images never overflow their containers
+  - height: auto maintains aspect ratio when width is constrained
+  
+  This is especially important for NASA images which come in various sizes
+  and need to fit within our panel grid layout.
+*/
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/*
+  TYPOGRAPHY HIERARCHY
+  ============================================================================
+  
+  Consistent spacing and color hierarchy for all text elements:
+  - margin-top: 0 removes default top margins that can cause spacing issues
+  - Custom colors from our space theme palette
+  - Appropriate font sizes and line heights for readability
+*/
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  color: var(--color-heading);
+  font-size: 2.5rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+h2 {
+  color: var(--color-heading);
+  font-size: 1.5rem;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+h3 {
+  color: var(--color-heading);
+  font-size: 1.25rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+p {
+  line-height: 1.6;
+  margin-bottom: var(--spacing-md);
+}
+
+/*
+  LINK STYLING
+  ============================================================================
+  
+  Links use the accent color from our space theme and include hover effects:
+  - Default state uses the primary accent color
+  - Hover state uses a slightly darker shade for feedback
+  - Transition provides smooth color changes
+  - Text decoration is preserved for accessibility
+*/
+a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-accent-hover);
+}
+
+/*
+  FOCUS ACCESSIBILITY
+  ============================================================================
+  
+  :focus-visible provides keyboard navigation accessibility without interfering
+  with mouse interactions:
+  
+  - Only shows focus outline when navigating with keyboard (not mouse clicks)
+  - Uses high-contrast accent color for visibility
+  - Applies to all interactive elements (links, buttons, form controls)
+  - outline-offset creates space between the element and focus ring
+  
+  Why :focus-visible over :focus:
+  - :focus shows outline on every click, which many users find distracting
+  - :focus-visible only shows when the user is actually navigating with keyboard
+  - This provides accessibility without compromising visual design
+*/
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/*
+  LAYOUT CONTAINER
+  ============================================================================
+  
+  The wrapper provides consistent page margins and maximum width:
+  - min() function chooses the smaller of 96% width or 1200px max-width
+  - This creates responsive margins that grow on larger screens
+  - margin: 0 auto centers the content horizontally
+  - Padding provides breathing room at top and bottom
+*/
+.wrapper {
+  width: min(96%, 1200px);
+  margin: 0 auto;
+  padding: var(--spacing-lg) 0;
+}
+
+/*
+  HERO SECTION
+  ============================================================================
+  
+  The hero section provides a prominent header for the dashboard:
+  - Dark background with subtle gradient for visual interest
+  - Generous padding for breathing room
+  - Border radius and shadow for depth
+  - Typography hierarchy with title and tagline
+*/
+.site-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.hero {
+  background: var(--bg-hero);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-panel);
+  text-align: center;
+  
+  /* 
+    Subtle gradient overlay to add depth
+    Creates a gentle highlight effect that draws attention to the title
+  */
+  background-image: linear-gradient(135deg, 
+    rgba(100, 255, 218, 0.1) 0%, 
+    transparent 50%, 
+    rgba(255, 107, 107, 0.05) 100%);
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  margin-bottom: var(--spacing-md);
+  font-size: clamp(2rem, 5vw, 3rem);
+  background: linear-gradient(135deg, var(--color-accent), #ffffff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
+
+.hero-tagline {
+  color: var(--color-text-dim);
+  font-size: 1.1rem;
+  margin-bottom: 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/*
+  PANELS GRID LAYOUT - CSS Grid with Responsive Breakpoints
+  ============================================================================
+  
+  CSS Grid is used for the main panel layout because it provides:
+  1. Two-dimensional layout control (rows AND columns)
+  2. Responsive design without media query complexity
+  3. Automatic item placement with consistent spacing
+  4. Easy breakpoint adjustments by changing grid-template-columns
+  
+  Mobile-First Approach:
+  - Default: Single column stack (mobile phones)
+  - 600px+: Two columns (tablets)
+  - 1024px+: Three columns (desktop)
+  
+  Why these breakpoints:
+  - 600px: Common tablet portrait width
+  - 1024px: Common tablet landscape/small desktop width
+  - Aligns with existing project breakpoint patterns
+*/
+
+.panels-grid {
+  display: grid;
+  gap: var(--spacing-lg);
+  
+  /*
+    Default mobile layout: Single column
+    - grid-template-columns: 1fr creates one column that takes full width
+    - All panels stack vertically on small screens
+    - This ensures readability on narrow viewports
+  */
+  grid-template-columns: 1fr;
+  
+  /*
+    Grid auto-placement behavior:
+    - Items are placed automatically in source order
+    - No need for explicit grid-area assignments
+    - Adding/removing panels doesn't require CSS changes
+  */
+  grid-auto-flow: row;
+}
+
+/*
+  TABLET BREAKPOINT - Two Column Layout
+  ============================================================================
+  
+  @media queries allow us to apply different styles at different screen sizes.
+  min-width: 600px means these styles apply when the viewport is 600px or wider.
+  
+  Why 600px:
+  - Common breakpoint for tablet portrait orientation
+  - Provides enough space for two panels side-by-side
+  - Maintains readability while utilizing available space
+  
+  repeat(2, 1fr) creates two equal-width columns:
+  - repeat() is a CSS Grid function that repeats a pattern
+  - 2 means repeat the pattern twice
+  - 1fr means each column gets an equal fraction of available space
+  - This is equivalent to: grid-template-columns: 1fr 1fr
+*/
+@media (min-width: 600px) {
+  .panels-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/*
+  DESKTOP BREAKPOINT - Three Column Layout
+  ============================================================================
+  
+  At 1024px and wider, we have enough space for three columns:
+  - All three panels can be displayed side-by-side
+  - Maximizes use of available screen real estate
+  - Creates a true "dashboard" feel with all data visible at once
+  
+  Why 1024px:
+  - Common breakpoint for desktop/laptop screens
+  - Tablet landscape orientation typically has this much width
+  - Ensures panels don't become too narrow on smaller desktop screens
+  
+  repeat(3, 1fr) creates three equal-width columns:
+  - Each panel gets exactly 1/3 of the available width
+  - Grid gap provides consistent spacing between all panels
+  - Layout automatically adjusts if content height varies
+*/
+@media (min-width: 1024px) {
+  .panels-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+/*
+  PANEL CARDS - Flexbox Internal Layout
+  ============================================================================
+  
+  Each panel is a card that contains different types of content (loader, error, data).
+  Flexbox is used for the internal layout because:
+  
+  1. Vertical stacking with flex-direction: column
+  2. Content area can grow to fill available space with flex: 1
+  3. Easy alignment of child elements
+  4. Automatic spacing between elements
+  
+  Why Flexbox over Grid for panel internals:
+  - Panels have a simple vertical stack layout (one-dimensional)
+  - Content height varies dynamically based on API responses
+  - Flexbox handles dynamic content sizing better than Grid
+  - Simpler CSS for this use case
+*/
+
+.panel {
+  /*
+    Flexbox container setup:
+    - display: flex makes this a flex container
+    - flex-direction: column stacks children vertically
+    - This creates a top-to-bottom flow: title → loader/error → content
+  */
+  display: flex;
+  flex-direction: column;
+  
+  /*
+    Visual styling using CSS custom properties:
+    - Background color creates contrast against page background
+    - Border provides subtle definition
+    - Border radius creates modern card appearance
+    - Box shadow adds depth and makes panels feel elevated
+    - Padding provides internal spacing for content
+  */
+  background: var(--bg-panel);
+  border: 1px solid var(--border-panel);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-panel);
+  padding: var(--spacing-lg);
+  
+  /*
+    Minimum height ensures panels have consistent baseline height:
+    - Even when content is loading or minimal
+    - Prevents layout jumping as content loads
+    - Creates visual balance in the grid
+  */
+  min-height: 300px;
+  
+  /*
+    Smooth transitions for interactive states:
+    - transform: for hover lift effect
+    - box-shadow: for hover shadow enhancement
+    - border-color: for focus state changes
+  */
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+/*
+  Panel hover effect:
+  - Subtle upward movement (translateY) creates "lift" sensation
+  - Enhanced shadow makes the panel appear to float
+  - Provides visual feedback that panels are interactive
+*/
+.panel:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+/*
+  Panel title styling:
+  - Margin bottom creates space between title and content
+  - Color uses heading color for hierarchy
+  - Font size is appropriate for card titles
+*/
+.panel h2 {
+  margin-bottom: var(--spacing-md);
+  color: var(--color-heading);
+  font-size: 1.25rem;
+}
+
+/*
+  LOADING SPINNER
+  ============================================================================
+  
+  CSS-only loading spinner using border and animation:
+  - Creates a circular spinner with rotating border
+  - Uses CSS animations instead of JavaScript for better performance
+  - Accessible to screen readers via aria-label (added in JS)
+  
+  How the spinner works:
+  1. border creates a full circle outline
+  2. border-top has different color to create the "spinning" segment
+  3. border-radius: 50% makes it perfectly circular
+  4. @keyframes spin rotates it continuously
+  5. animation applies the rotation with infinite duration
+*/
+
+.panel__loader {
+  /*
+    Spinner positioning and sizing:
+    - align-self: center centers it horizontally in the flex container
+    - width/height create a medium-sized spinner
+    - margin provides vertical spacing
+  */
+  align-self: center;
+  width: 40px;
+  height: 40px;
+  margin: var(--spacing-lg) 0;
+  
+  /*
+    Spinner visual design:
+    - border creates the circular track
+    - border-top creates the colored segment that appears to spin
+    - border-radius: 50% makes it perfectly circular
+  */
+  border: 3px solid rgba(100, 255, 218, 0.3);
+  border-top: 3px solid var(--color-accent);
+  border-radius: 50%;
+  
+  /*
+    Animation application:
+    - References the @keyframes spin animation defined below
+    - 1s duration for smooth but not too slow rotation
+    - linear timing for consistent speed
+    - infinite iteration for continuous spinning
+  */
+  animation: spin 1s linear infinite;
+}
+
+/*
+  Keyframe animation for spinner rotation:
+  - from: starting rotation (0 degrees)
+  - to: ending rotation (360 degrees = full circle)
+  - Browser interpolates between these values smoothly
+  
+  Why CSS animation over JavaScript:
+  - Better performance (runs on GPU when possible)
+  - Continues running even if JavaScript is blocked
+  - Simpler code with no need for requestAnimationFrame
+*/
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/*
+  ERROR STATE STYLING
+  ============================================================================
+  
+  Error messages are hidden by default and shown when fetch fails:
+  - Red color indicates error state
+  - Padding and border radius create a contained message area
+  - Background provides contrast for readability
+*/
+
+.panel__error {
+  /*
+    Hidden by default:
+    - display: none completely removes from layout
+    - JavaScript will change this to display: block when needed
+    - [hidden] attribute in HTML provides additional hiding
+  */
+  display: none;
+  
+  /*
+    Error message styling:
+    - Background color creates contained message area
+    - Border provides additional visual separation
+    - Padding creates internal spacing for text
+    - Border radius matches panel design language
+  */
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid var(--color-hazardous);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+  color: var(--color-hazardous);
+  text-align: center;
+}
+
+/*
+  Error state visibility:
+  - When panel has data-state="error", show the error message
+  - This is controlled by JavaScript based on fetch results
+*/
+.panel[data-state="error"] .panel__error {
+  display: block;
+}
+
+/*
+  CONTENT AREA
+  ============================================================================
+  
+  The content area is where API data gets rendered:
+  - flex: 1 makes it grow to fill remaining panel space
+  - This pushes the title to the top and content fills the rest
+  - Handles variable content heights gracefully
+*/
+
+.panel__content {
+  /*
+    Flex grow behavior:
+    - flex: 1 is shorthand for flex-grow: 1, flex-shrink: 1, flex-basis: 0
+    - This makes the content area expand to fill available space
+    - Ensures consistent panel heights even with varying content
+  */
+  flex: 1;
+  
+  /*
+    Content styling:
+    - Display flex allows for internal layout control
+    - flex-direction: column stacks content vertically
+    - This is useful for APOD (image + title + description) layout
+  */
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/*
+  Loading and error state management:
+  - When panel is loading, hide content area
+  - When panel has error, hide content area
+  - Only show content when data is successfully loaded
+*/
+.panel[data-state="loading"] .panel__content,
+.panel[data-state="error"] .panel__content {
+  display: none;
+}
+
+.panel[data-state="ready"] .panel__loader {
+  display: none;
+}
+/*
+  MARS ROVER PHOTOS GRID
+  ============================================================================
+  
+  The Mars photos are displayed in a responsive image grid using CSS Grid:
+  - auto-fit automatically adjusts column count based on available space
+  - minmax() ensures images are never too small or too large
+  - gap provides consistent spacing between photos
+  
+  Why CSS Grid for the photo layout:
+  - Two-dimensional control (rows and columns)
+  - Automatic responsive behavior without media queries
+  - Consistent spacing and alignment
+  - Handles varying numbers of photos gracefully (6-12 photos)
+*/
+
+.mars-grid {
+  /*
+    CSS Grid with automatic responsive columns:
+    - repeat() creates multiple columns using a pattern
+    - auto-fit automatically fits as many columns as possible
+    - minmax(120px, 1fr) sets minimum column width to 120px, maximum to equal fractions
+    
+    How this works:
+    1. Browser calculates how many 120px columns fit in available space
+    2. If there's extra space, columns grow equally (1fr each)
+    3. If space is tight, maintains 120px minimum for readability
+    4. Photos automatically wrap to new rows as needed
+  */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+}
+
+/*
+  Mars photo styling:
+  - Border radius for consistent design language
+  - Aspect ratio ensures consistent photo dimensions
+  - Object-fit: cover crops photos to fit without distortion
+  - Transition for smooth hover effects
+*/
+.mars-grid img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  transition: transform 0.2s ease;
+}
+
+/*
+  Mars photo hover effect:
+  - Subtle scale increase provides interactive feedback
+  - Transform is GPU-accelerated for smooth animation
+*/
+.mars-grid img:hover {
+  transform: scale(1.05);
+}
+
+/*
+  Mars caption styling:
+  - Displays Earth date and Martian sol information
+  - Dimmed text color for secondary information
+  - Centered alignment for visual balance
+*/
+.mars-caption {
+  text-align: center;
+  color: var(--color-text-dim);
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background: rgba(100, 255, 218, 0.05);
+  border-radius: var(--radius-sm);
+}
+
+/*
+  NEAR EARTH OBJECTS TABLE
+  ============================================================================
+  
+  The NEO data is displayed as an accessible HTML table:
+  - Full width utilizes available panel space
+  - Border-collapse creates clean line appearance
+  - Alternating row colors improve readability
+  - Responsive text sizing for smaller screens
+  
+  Why HTML table for NEO data:
+  - Semantic structure for screen readers
+  - Built-in keyboard navigation
+  - Easy to scan columnar data
+  - Accessible with proper caption and scope attributes
+*/
+
+.neo-table {
+  /*
+    Table layout and spacing:
+    - width: 100% fills the panel content area
+    - border-collapse: collapse removes default table spacing
+    - margin-top provides separation from panel title
+  */
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--spacing-md);
+  
+  /*
+    Typography for data readability:
+    - Smaller font size fits more data in limited space
+    - Line height optimized for tabular data
+  */
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/*
+  Table caption styling:
+  - Provides context for screen readers
+  - Visually integrated with table design
+  - Required for accessibility compliance
+*/
+.neo-table caption {
+  caption-side: top;
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-heading);
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-sm);
+}
+
+/*
+  Table header styling:
+  - Background color distinguishes headers from data
+  - Padding creates breathing room
+  - Text alignment optimized for each column type
+  - Font weight emphasizes header hierarchy
+*/
+.neo-table th {
+  background: rgba(100, 255, 218, 0.1);
+  padding: var(--spacing-sm);
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-heading);
+  border-bottom: 2px solid var(--border-panel);
+}
+
+/*
+  Numeric column alignment:
+  - Right-align numeric data for easier comparison
+  - Applies to diameter, distance columns
+*/
+.neo-table th:nth-child(2),
+.neo-table th:nth-child(4),
+.neo-table td:nth-child(2),
+.neo-table td:nth-child(4) {
+  text-align: right;
+}
+
+/*
+  Table data cell styling:
+  - Consistent padding with headers
+  - Subtle border for row separation
+  - Proper text alignment for readability
+*/
+.neo-table td {
+  padding: var(--spacing-sm);
+  border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+  vertical-align: top;
+}
+
+/*
+  Alternating row colors for readability:
+  - nth-child(even) targets every second row
+  - Subtle background difference helps eye track across columns
+  - Common pattern in data tables
+*/
+.neo-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/*
+  HAZARDOUS ASTEROID HIGHLIGHTING
+  ============================================================================
+  
+  Potentially hazardous asteroids get special visual treatment:
+  - Red accent color draws attention to dangerous objects
+  - Background highlight makes the entire row stand out
+  - Border provides additional visual emphasis
+  
+  This styling is applied by JavaScript when rendering NEO data
+  based on the is_potentially_hazardous_asteroid API field.
+*/
+.neo-table tr.hazardous {
+  /*
+    Hazardous row styling:
+    - Background color uses the hazardous custom property
+    - Border provides additional visual weight
+    - Color ensures text remains readable on highlighted background
+  */
+  background: rgba(255, 107, 107, 0.1) !important;
+  border-left: 3px solid var(--color-hazardous);
+  color: var(--color-text);
+}
+
+/*
+  Hazardous row hover effect:
+  - Enhanced background on hover for interactivity
+  - Maintains accessibility while providing feedback
+*/
+.neo-table tr.hazardous:hover {
+  background: rgba(255, 107, 107, 0.15) !important;
+}
+
+/*
+  FOOTER STYLING
+  ============================================================================
+  
+  Footer provides attribution for NASA API usage:
+  - Centered text for visual balance
+  - Dimmed color for secondary information
+  - Proper spacing from main content
+*/
+.site-footer {
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--color-text-dim);
+  border-top: 1px solid var(--border-panel);
+}
+
+.site-footer a {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+/*
+  RESPONSIVE TYPOGRAPHY
+  ============================================================================
+  
+  Adjustments for smaller screens to maintain readability:
+  - Smaller font sizes on mobile devices
+  - Adjusted spacing for touch interfaces
+  - Maintained hierarchy and contrast
+*/
+@media (max-width: 599px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-tagline {
+    font-size: 1rem;
+  }
+  
+  .panel {
+    padding: var(--spacing-md);
+  }
+  
+  .neo-table {
+    font-size: 0.8rem;
+  }
+  
+  .neo-table th,
+  .neo-table td {
+    padding: var(--spacing-xs);
+  }
+}
