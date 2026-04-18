@@ -10,10 +10,6 @@
   4) lazy-loading the heavier gallery panels so we do not spend requests up front
   5) animating panels/cards with Popmotion, with a CSS fallback if Popmotion fails
 
-  - fetch():
-    The assignment slides emphasize browser-native network requests and AJAX.
-    fetch() is built into modern browsers, so it matches the course material and
-    avoids bringing in axios when CORS / browser fetch behavior are the focus.
 
   - NASA APOD + NEO endpoints:
     These are direct NASA API endpoints that return current JSON data and fit the
@@ -276,8 +272,7 @@
     This is the core fetch helper for the project.
 
     - fetch() is the browser-native network API
-    - the course slides specifically discuss fetch and promises/AJAX
-    - the project instructions say not to use axios as a CORS workaround
+    - fetch and promises/AJAX
 
     What's Happening:
     1) checks localStorage for a fresh cached copy first
